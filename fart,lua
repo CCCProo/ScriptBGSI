@@ -1,0 +1,123 @@
+-- ModuleScript: CharacterMover
+local CharacterMover = {}
+
+-- Services
+local RunService = game:GetService("RunService")
+
+-- Default configuration
+CharacterMover.config = {
+    defaultSpeed = 300,
+    heightOffset = Vector3.new(0, 3, 0),
+    collisionRadius = 1,
+    collisionDisableTime = 0.1,
+    collisionCheckInterval = 0.1
+}
+
+-- Creates a new movement instance
+function CharacterMover.new(targetPosition, character, speed)
+    local self = setmetatable({}, { __index = CharacterMover })
+    
+    -- Validate parameters
+    assert(typeof(targetPosition) == "Vector3", "Target position must be a Vector3")
+    assert(typeof(character) == "Instance" and character:IsA("Model"), "Character must be a Model")
+    assert(character:FindFirstChild("Humanoid"), "Character must have a Humanoid")
+    
+    -- Initialize properties
+    self._event = Instance.new("BindableEvent")
+    self._targetPosition = targetPosition
+    self._character = character
+    self._humanoid = character.Humanoid
+    self._speed = speed or CharacterMover.config.defaultSpeed
+    self._startPosition = character:GetPivot().Position
+    self._direction = (targetPosition - self._startPosition).Unit
+    self._distance = (targetPosition - self._startPosition).Magnitude
+    self._totalTime = self._distance / self._speed
+    self._connection = nil
+    self._active = false
+    
+    return self
+end
+
+-- Disables nearby collisions temporarily
+function CharacterMover:_disableNearbyCollisions(position)
+    local radius = self.config.collisionRadius
+    local region = Region3.new(
+        position - Vector3.new(radius, radius, radius),
+        position + Vector3.new(radius, radius, radius)
+    )
+    
+    local partsInRegion = workspace:FindPartsInRegion3(region, nil, 100)
+    
+    for _, part in ipairs(partsInRegion) do
+        if (part:IsA("BasePart") or part:IsA("Part")) and part.CanCollide then
+            part.CanCollide = false
+            
+            task.delay(self.config.collisionDisableTime, function()
+                if part and part.Parent then
+                    part.CanCollide = true
+                end
+            end)
+        end
+    end
+end
+
+-- Starts the movement
+function CharacterMover:Start()
+    if self._active then return end
+    self._active = true
+    
+    -- Set physics state
+    self._humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    local controls = self._humanoid:FindFirstChild("Controls")
+    if controls then controls:Destroy() end
+    
+    -- Start movement loop
+    local startTime = tick()
+    self._connection = RunService.Heartbeat:Connect(function()
+        local elapsed = tick() - startTime
+        local progress = math.min(elapsed / self._totalTime, 1)
+        
+        local newPosition = self._startPosition + (self._direction * self._speed * elapsed)
+        
+        -- Check collisions at intervals
+        if elapsed % self.config.collisionCheckInterval < 0.016 then
+            self:_disableNearbyCollisions(newPosition)
+        end
+        
+        -- Move character
+        self._character:PivotTo(CFrame.new(newPosition + self.config.heightOffset, self._targetPosition))
+        
+        -- Check if movement completed
+        if progress >= 1 then
+            self:Stop()
+            self._humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            self._event:Fire()
+        end
+    end)
+    
+    return self
+end
+
+-- Stops the movement
+function CharacterMover:Stop()
+    if not self._active then return end
+    self._active = false
+    
+    if self._connection then
+        self._connection:Disconnect()
+        self._connection = nil
+    end
+end
+
+-- Cleans up the instance
+function CharacterMover:Destroy()
+    self:Stop()
+    self._event:Destroy()
+end
+
+-- Returns the Ended event
+function CharacterMover:GetEndedEvent()
+    return self._event.Event
+end
+
+return CharacterMover
