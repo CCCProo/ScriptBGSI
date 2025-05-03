@@ -1,0 +1,262 @@
+local module = {}
+
+local function create_UITextSize(max: number, min: number, parent)
+	local create = Instance.new("UITextSizeConstraint", parent)
+	create.MinTextSize = min
+	create.MaxTextSize = max
+end
+
+local function create_UIList(max: UDim, Horizont: Enum.HorizontalAlignment, parent)
+	local create = Instance.new("UIListLayout", parent)
+	create.Padding = max
+	create.HorizontalAlignment = Horizont
+end
+
+local function create_UICorner(vec: UDim, parent)
+	local create = Instance.new("UICorner", parent)
+	create.CornerRadius = vec
+end
+
+local function create_UIStroke(num: num, parent)
+	local create = Instance.new("UIStroke", parent)
+	create.Thickness = num
+end
+
+function module.create_starter(parent)
+
+	local frame_Frame = Instance.new("Frame")
+	frame_Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame_Frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame_Frame.BorderSizePixel = 0
+	frame_Frame.ClipsDescendants = false
+	frame_Frame.LayoutOrder = 0
+	frame_Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	frame_Frame.Rotation = 0
+	frame_Frame.Size = UDim2.new(0.683844, 0, 0.610638, 0)
+	frame_Frame.Visible = true
+	frame_Frame.Parent = parent
+
+	local scrolling_ScrollingFrame = Instance.new("ScrollingFrame")
+	scrolling_ScrollingFrame.AnchorPoint = Vector2.new(0, 0)
+	scrolling_ScrollingFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+	scrolling_ScrollingFrame.BackgroundTransparency = 1
+	scrolling_ScrollingFrame.BorderSizePixel = 0
+	scrolling_ScrollingFrame.ClipsDescendants = true
+	scrolling_ScrollingFrame.Position = UDim2.new(0.016293, 0, 0.045296, 0)
+	scrolling_ScrollingFrame.Size = UDim2.new(0.967413, 0, 0.905923, 0)
+	scrolling_ScrollingFrame.Name = "ScrollingFrame"
+	scrolling_ScrollingFrame.ScrollBarImageColor3 = Color3.new(0.462745, 0.341176, 0.427451)
+	scrolling_ScrollingFrame.ScrollBarThickness = 6
+	scrolling_ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
+	scrolling_ScrollingFrame.CanvasPosition = Vector2.new(0, 0)
+	scrolling_ScrollingFrame.Parent = frame_Frame
+
+	create_UIList(UDim.new(0.001, 5), Enum.HorizontalAlignment.Center, scrolling_ScrollingFrame)
+	create_UICorner(UDim.new(0, 8), frame_Frame)
+
+	return frame_Frame, scrolling_ScrollingFrame
+end
+
+
+function module.create_num(name, parent, info_input)
+	local frame_Frame = Instance.new("Frame")
+	frame_Frame.AnchorPoint = Vector2.new(0, 0.5)
+	frame_Frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame_Frame.BorderSizePixel = 0.000000
+	frame_Frame.Position = UDim2.new(0.000000, 0, 0.037308, 0)
+	frame_Frame.Size = UDim2.new(0.885140, 0, 0.074615, 0)
+	frame_Frame.Name = "Frame"
+	frame_Frame.Parent = parent
+
+	local frame_Input = Instance.new("Frame")
+	frame_Input.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame_Input.BorderSizePixel = 0.000000
+	frame_Input.ClipsDescendants = false
+	frame_Input.Position = UDim2.new(0.470370, 0, 0.174127, 0)
+	frame_Input.Size = UDim2.new(0.280088, 0, 0.619048, 0)
+	frame_Input.Transparency = 0.000000
+	frame_Input.Name = "Input"
+	frame_Input.Parent = frame_Frame
+
+	local textbox_TextBox = Instance.new("TextBox")
+	textbox_TextBox.AnchorPoint = Vector2.new(0, 0)
+	textbox_TextBox.BackgroundColor3 = Color3.new(1, 1, 1)
+	textbox_TextBox.BorderSizePixel = 0.000000
+	textbox_TextBox.ClipsDescendants = false
+	textbox_TextBox.Position = UDim2.new(0, 0, 0, 0)
+	textbox_TextBox.Rotation = 0.000000
+	textbox_TextBox.Size = UDim2.new(1, 0, 1, 0)
+	textbox_TextBox.FontFace = Font.new("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Regular)
+	textbox_TextBox.Text = ""
+	textbox_TextBox.TextColor3 = Color3.new(0.000000, 0.000000, 0.000000)
+	textbox_TextBox.TextTransparency = 0.000000
+	textbox_TextBox.TextWrapped = true
+	textbox_TextBox.TextStrokeColor3 = Color3.new(0, 0, 0)
+	textbox_TextBox.PlaceholderText = ""
+	textbox_TextBox.PlaceholderColor3 = Color3.new(0.7, 0.7, 0.7)
+	textbox_TextBox.Parent = frame_Input
+
+	create_UITextSize(40, 20, textbox_TextBox)
+	create_UICorner(UDim.new(0, 8), textbox_TextBox)
+
+	create_UICorner(UDim.new(0, 8), frame_Input)
+	create_UIStroke(2, frame_Input)
+
+	textbox_TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+		textbox_TextBox.Text = textbox_TextBox.Text:gsub('%D+', '');
+		
+		local max = info_input or {max = 10}
+		
+		if string.len(textbox_TextBox.Text) > max.max then
+			textbox_TextBox.Text = string.sub(textbox_TextBox.Text, 1, max.max)
+		end
+	end)
+
+	local textbutton_TextButton = Instance.new("TextButton")
+	textbutton_TextButton.BackgroundColor3 = Color3.new(1, 0, 0)
+	textbutton_TextButton.BorderSizePixel = 2.000000
+	textbutton_TextButton.Position = UDim2.new(0.827133, 0, 0.206349, 0)
+	textbutton_TextButton.Size = UDim2.new(0.135667, 0, 0, 18)
+	textbutton_TextButton.ZIndex = 1.000000
+	textbutton_TextButton.Name = "TextButton"
+	textbutton_TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular)
+	textbutton_TextButton.Text = ""
+	textbutton_TextButton.TextWrapped = true
+	textbutton_TextButton.Parent = frame_Frame
+
+	local textlabel_TextLabel = Instance.new("TextLabel")
+	textlabel_TextLabel.BackgroundTransparency = 1
+	textlabel_TextLabel.BorderSizePixel = 0.000000
+	textlabel_TextLabel.Position = UDim2.new(0.02, 0, 0.27, 0)
+	textlabel_TextLabel.Size = UDim2.new(0.205689, 0, 0.444444, 0)
+	textlabel_TextLabel.FontFace = Font.new("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Regular)
+	textlabel_TextLabel.Text = name
+	textlabel_TextLabel.TextColor3 = Color3.new(0, 0, 0)
+	textlabel_TextLabel.TextWrapped = true
+	textlabel_TextLabel.TextScaled = true
+	textlabel_TextLabel.Parent = frame_Frame
+	textlabel_TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	create_UITextSize(30, 20, textlabel_TextLabel)
+
+	return textbutton_TextButton, textbox_TextBox
+end
+
+function module.create_vib(all_vib, parent)
+	
+	local frame_Vib = Instance.new("Frame")
+	frame_Vib.AnchorPoint = Vector2.new(0, 0.5)
+	frame_Vib.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame_Vib.BorderSizePixel = 0
+	frame_Vib.ClipsDescendants = false
+	frame_Vib.Position = UDim2.new(0.057430, 0, 0.113133, 0)
+	frame_Vib.Size = UDim2.new(0.885, 0,0, 70)
+	frame_Vib.Name = "Vib"
+	frame_Vib.Parent = parent
+	
+	create_UICorner(UDim.new(0, 8), frame_Vib)
+	
+	local scrollingframe_ScrollingFrame = Instance.new("ScrollingFrame")
+	scrollingframe_ScrollingFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+	scrollingframe_ScrollingFrame.BackgroundTransparency = 1
+	scrollingframe_ScrollingFrame.BorderSizePixel = 0
+	scrollingframe_ScrollingFrame.Position = UDim2.new(0.02, 0, 0.485, 0)
+	scrollingframe_ScrollingFrame.Size = UDim2.new(0.96, 0, 0.417, 0)
+	scrollingframe_ScrollingFrame.ScrollBarImageColor3 = Color3.new(0, 0, 0)
+	scrollingframe_ScrollingFrame.ScrollBarThickness = 12
+	scrollingframe_ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
+	scrollingframe_ScrollingFrame.Parent = frame_Vib
+	scrollingframe_ScrollingFrame.Visible = false
+	
+	create_UIList(UDim.new(0.001, 0), Enum.HorizontalAlignment.Center, scrollingframe_ScrollingFrame)
+	
+	for name1, _ in pairs(all_vib) do
+			
+		local clones = Instance.new("Frame")
+		clones.BackgroundColor3 = Color3.new(0.945098, 0.945098, 0.945098)
+		clones.BackgroundTransparency = 0
+		clones.BorderSizePixel = 0
+		clones.LayoutOrder = 0
+		clones.Position = UDim2.new(0, 0, 0, 0)
+		clones.Rotation = 0.000000
+		clones.Size = UDim2.new(0.839, 0, 0, 29)
+		clones.Name = "Frame"
+		clones.Parent = scrollingframe_ScrollingFrame
+		
+		local TextButtonClones = Instance.new("TextButton")
+		TextButtonClones.BackgroundColor3 = Color3.new(0.764706, 0.764706, 0.764706)
+		TextButtonClones.BorderColor3 = Color3.new(0, 0, 0)
+		TextButtonClones.BorderSizePixel = 3.000000
+		TextButtonClones.Position = UDim2.new(0.919118, 0, 0.147059, 0)
+		TextButtonClones.Size = UDim2.new(0.058824, 0, 0.705882, 0)
+		TextButtonClones.Name = "TextButton"
+		TextButtonClones.Text = ""
+		TextButtonClones.Parent = clones
+		
+		local TextLabelClones = Instance.new("TextLabel")
+		TextLabelClones.BackgroundTransparency = 1
+		TextLabelClones.BorderSizePixel = 0
+		TextLabelClones.Position = UDim2.new(0.026961, 0, 0.176471, 0)
+		TextLabelClones.Size = UDim2.new(0.360294, 0, 0.617647, 0)
+		TextLabelClones.FontFace = Font.new("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Regular)
+		TextLabelClones.Text = name1
+		TextLabelClones.TextScaled = true
+		TextLabelClones.Parent = clones
+	end
+	
+	local button = Instance.new("TextButton")
+	button.AnchorPoint = Vector2.new(0, 0.5)
+	button.BackgroundColor3 = Color3.new(0, 0, 0)
+	button.BorderSizePixel = 0
+	button.Position = UDim2.new(0.02, 0, 0, 55)
+	button.Size = UDim2.new(0.959, 0,0, 16)
+	button.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular)
+	button.Text = "Chest selection"
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.TextScaled = true
+	button.Parent = frame_Vib
+	
+	button.MouseButton1Up:Connect(function()
+		if button.Text == "Close" then
+			scrollingframe_ScrollingFrame.Visible = false
+			frame_Vib.Size = UDim2.new(0.885, 0,0, 70)
+
+			button.Size = UDim2.new(0.959, 0, 0, 16)
+			button.Text = "Chest selection"
+		else
+
+			scrollingframe_ScrollingFrame.Visible = true
+			frame_Vib.Size = UDim2.new(0.885, 0,0, 140)
+			
+			button.Text = "Close"
+			button.Size = UDim2.new(0.959, 0, 0, 16)
+		end
+	end)
+	
+	local textlabel_TextLabel = Instance.new("TextLabel")
+	textlabel_TextLabel.BackgroundTransparency = 1
+	textlabel_TextLabel.BorderSizePixel = 0.000000
+	textlabel_TextLabel.Position = UDim2.new(0.019985, 0, 0, 10)
+	textlabel_TextLabel.Size = UDim2.new(0.492640, 0, 0, 18)
+	textlabel_TextLabel.FontFace = Font.new("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Regular)
+	textlabel_TextLabel.Text = "Auto Chest"
+	textlabel_TextLabel.TextScaled = true
+	textlabel_TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	textlabel_TextLabel.Parent = frame_Vib
+	
+	local textbutton_TextButton = Instance.new("TextButton")
+	textbutton_TextButton.BackgroundColor3 = Color3.new(1, 0, 0)
+	textbutton_TextButton.BorderSizePixel = 2.000000
+	textbutton_TextButton.Position = UDim2.new(0.827133, 0, 0, 10)
+	textbutton_TextButton.Size = UDim2.new(0.135667, 0, 0, 18)
+	textbutton_TextButton.ZIndex = 1.000000
+	textbutton_TextButton.Name = "TextButton"
+	textbutton_TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular)
+	textbutton_TextButton.Text = ""
+	textbutton_TextButton.TextWrapped = true
+	textbutton_TextButton.Parent = frame_Vib
+	
+	return scrollingframe_ScrollingFrame, textbutton_TextButton
+end
+
+return module
