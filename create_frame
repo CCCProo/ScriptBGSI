@@ -6,6 +6,11 @@ local function create_UITextSize(max: number, min: number, parent)
 	create.MaxTextSize = max
 end
 
+local function create_UISize(max: number, parent)
+	local create = Instance.new("UISizeConstraint", parent)
+	create.MaxSize = Vector2.new(max, "inf")
+end
+
 local function create_UIList(max: UDim, Horizont: Enum.HorizontalAlignment, parent)
 	local create = Instance.new("UIListLayout", parent)
 	create.Padding = max
@@ -53,6 +58,7 @@ function module.create_starter(parent)
 
 	create_UIList(UDim.new(0.001, 5), Enum.HorizontalAlignment.Center, scrolling_ScrollingFrame)
 	create_UICorner(UDim.new(0, 8), frame_Frame)
+	create_UISize(500, frame_Frame)
 
 	return frame_Frame, scrolling_ScrollingFrame
 end
