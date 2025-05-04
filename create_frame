@@ -286,7 +286,7 @@ function module.create_num(name, parent, info_input)
 	return textbutton_TextButton, textbox_TextBox
 end
 
-function module.create_vib(all_vib, parent)
+function module.create_vib(name_par, name_sel, all_vib, parent, size_ps)
 
 	local frame_Vib = Instance.new("Frame")
 	frame_Vib.AnchorPoint = Vector2.new(0, 0.5)
@@ -305,7 +305,7 @@ function module.create_vib(all_vib, parent)
 	scrollingframe_ScrollingFrame.BackgroundTransparency = 1
 	scrollingframe_ScrollingFrame.BorderSizePixel = 0
 	scrollingframe_ScrollingFrame.Position = UDim2.new(0.02, 0, 0.485, 0)
-	scrollingframe_ScrollingFrame.Size = UDim2.new(0.96, 0, 0.417, 0)
+	scrollingframe_ScrollingFrame.Size = UDim2.new(0.96, 0, 0.417 + size_ps, 0)
 	scrollingframe_ScrollingFrame.ScrollBarImageColor3 = Color3.new(0, 0, 0)
 	scrollingframe_ScrollingFrame.ScrollBarThickness = 12
 	scrollingframe_ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
@@ -347,6 +347,8 @@ function module.create_vib(all_vib, parent)
 		TextLabelClones.TextScaled = true
 		TextLabelClones.Parent = clones
 	end
+	
+	scrollingframe_ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, scrollingframe_ScrollingFrame.UIListLayout.AbsoluteContentSize.Y)
 
 	local button = Instance.new("TextButton")
 	button.AnchorPoint = Vector2.new(0, 0.5)
@@ -355,7 +357,7 @@ function module.create_vib(all_vib, parent)
 	button.Position = UDim2.new(0.02, 0, 0, 55)
 	button.Size = UDim2.new(0.959, 0,0, 16)
 	button.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular)
-	button.Text = "Chest selection"
+	button.Text = name_sel
 	button.TextColor3 = Color3.new(1, 1, 1)
 	button.TextScaled = true
 	button.Parent = frame_Vib
@@ -366,11 +368,11 @@ function module.create_vib(all_vib, parent)
 			frame_Vib.Size = UDim2.new(0.885, 0,0, 70)
 
 			button.Size = UDim2.new(0.959, 0, 0, 16)
-			button.Text = "Chest selection"
+			button.Text = name_sel
 		else
 
 			scrollingframe_ScrollingFrame.Visible = true
-			frame_Vib.Size = UDim2.new(0.885, 0,0, 140)
+			frame_Vib.Size = UDim2.new(0.885, 0,0, 140 + size_ps)
 
 			button.Text = "Close"
 			button.Size = UDim2.new(0.959, 0, 0, 16)
@@ -383,7 +385,7 @@ function module.create_vib(all_vib, parent)
 	textlabel_TextLabel.Position = UDim2.new(0.019985, 0, 0, 10)
 	textlabel_TextLabel.Size = UDim2.new(0.492640, 0, 0, 18)
 	textlabel_TextLabel.FontFace = Font.new("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Regular)
-	textlabel_TextLabel.Text = "Auto Chest"
+	textlabel_TextLabel.Text = name_par
 	textlabel_TextLabel.TextScaled = true
 	textlabel_TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 	textlabel_TextLabel.Parent = frame_Vib
