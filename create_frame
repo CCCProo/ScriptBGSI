@@ -311,7 +311,7 @@ function module.create_vib(name_par, name_sel, all_vib, parent, size_ps)
 	scrollingframe_ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
 	scrollingframe_ScrollingFrame.Parent = frame_Vib
 	scrollingframe_ScrollingFrame.Visible = false
-	scrollingframe_ScrollingFrame.ZIndex = parent.ZIndex + 1
+	scrollingframe_ScrollingFrame.ZIndex = 10
 
 	create_UIList(UDim.new(0.001, 0), Enum.HorizontalAlignment.Center, scrollingframe_ScrollingFrame)
 
